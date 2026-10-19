@@ -1,1 +1,68 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Connexion | BONNE AFFAIRE</title><link rel="stylesheet" href="style.css"></head><body><header class="header"><div class="container nav"><a class="logo" href="index.html">BONNE<span>AFFAIRE</span></a><button class="mobile outline" onclick="document.querySelector('.links').classList.toggle('open')">☰</button><nav class="links"><a href="index.html">Accueil</a><a href="recherche.html">Annonces</a><a href="publier.html">Publier</a><a href="favoris.html">Favoris</a><a href="messagerie.html">Messagerie</a><a href="admin.html">Administration</a></nav><div class="nav-actions"><a class="btn outline" href="connexion.html">Se connecter</a><a class="btn outline" href="inscription.html">Créer un compte</a><a class="btn primary" href="publier.html">Déposer une annonce</a></div></div></header><main><div class="container"><div class="auth"><div class="auth-side"><p class="eyebrow">Bon retour</p><h2>Retrouvez vos bonnes affaires.</h2><p>Gérez vos annonces, favoris et messages.</p><p>Pas de compte ? <a href="inscription.html">Créer un compte</a></p></div><div class="auth-main"><h2>Se connecter</h2><form id="login-form"><div class="field"><label>E-mail</label><input id="login-email" type="email" required></div><div class="field"><label>Mot de passe</label><input id="login-password" type="password" required minlength="4"></div><div class="field"><label>Rôle de démonstration</label><select id="role"><option value="member">Membre</option><option value="admin">Administrateur</option></select></div><button class="primary">Se connecter</button><p id="login-msg" class="muted"></p></form><p class="small">Connexion de démonstration uniquement.</p></div></div></div></main><footer class="footer"><div class="container footer-grid"><div><a class="logo" style="color:white" href="index.html">BONNE<span>AFFAIRE</span></a><p>Les bonnes occasions, près de vous.</p></div><div><h3>Explorer</h3><a href="recherche.html">Toutes les annonces</a><a href="favoris.html">Mes favoris</a></div><div><h3>Compte</h3><a href="connexion.html">Se connecter</a><a href="inscription.html">Créer un compte</a><a href="admin.html">Administration</a></div></div><div class="container small">© 2026 BONNE AFFAIRE · Projet pédagogique</div></footer><div id="toast" class="toast hidden"></div><script src="app.js"></script></body></html>
+<!doctype html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Connexion | BONNE AFFAIRE</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header class="header">
+        <div class="container nav"><a class="logo" href="index.html">BONNE<span>AFFAIRE</span></a><button
+                class="mobile outline" onclick="document.querySelector('.links').classList.toggle('open')">☰</button>
+            <nav class="links"><a href="index.html">Accueil</a><a href="recherche.html">Annonces</a><a
+                    href="publier.html">Publier</a><a href="favoris.html">Favoris</a><a
+                    href="messagerie.html">Messagerie</a><a href="admin.html">Administration</a></nav>
+            <div class="nav-actions"><a class="btn outline" href="connexion.html">Se connecter</a><a class="btn outline"
+                    href="inscription.html">Créer un compte</a><a class="btn primary" href="publier.html">Déposer une
+                    annonce</a></div>
+        </div>
+    </header>
+    <main>
+        <div class="container">
+            <div class="auth">
+                <div class="auth-side">
+                    <p class="eyebrow">Bon retour</p>
+                    <h2>Retrouvez vos bonnes affaires.</h2>
+                    <p>Gérez vos annonces, favoris et messages.</p>
+                    <p>Pas de compte ? <a href="inscription.html">Créer un compte</a></p>
+                </div>
+                <div class="auth-main">
+                    <h2>Se connecter</h2>
+                    <form id="login-form">
+                        <div class="field"><label>E-mail</label><input id="login-email" type="email" required></div>
+                        <div class="field"><label>Mot de passe</label><input id="login-password" type="password"
+                                required minlength="4"></div>
+                        <div class="field"><label>Rôle de démonstration</label><select id="role">
+                                <option value="member">Membre</option>
+                                <option value="admin">Administrateur</option>
+                            </select></div><button class="primary">Se connecter</button>
+                        <p id="login-msg" class="muted"></p>
+                    </form>
+                    <p class="small">Connexion de démonstration uniquement.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div><a class="logo" style="color:white" href="index.html">BONNE<span>AFFAIRE</span></a>
+                <p>Les bonnes occasions, près de vous.</p>
+            </div>
+            <div>
+                <h3>Explorer</h3><a href="recherche.html">Toutes les annonces</a><a href="favoris.html">Mes favoris</a>
+            </div>
+            <div>
+                <h3>Compte</h3><a href="connexion.html">Se connecter</a><a href="inscription.html">Créer un compte</a><a
+                    href="admin.html">Administration</a>
+            </div>
+        </div>
+        <div class="container small">© 2026 BONNE AFFAIRE · Projet pédagogique</div>
+    </footer>
+    <div id="toast" class="toast hidden"></div>
+    <script src="app.js"></script>
+</body>
+
+</html>

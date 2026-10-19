@@ -1,1 +1,84 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Publier | BONNE AFFAIRE</title><link rel="stylesheet" href="style.css"></head><body><header class="header"><div class="container nav"><a class="logo" href="index.html">BONNE<span>AFFAIRE</span></a><button class="mobile outline" onclick="document.querySelector('.links').classList.toggle('open')">☰</button><nav class="links"><a href="index.html">Accueil</a><a href="recherche.html">Annonces</a><a href="publier.html">Publier</a><a href="favoris.html">Favoris</a><a href="messagerie.html">Messagerie</a><a href="admin.html">Administration</a></nav><div class="nav-actions"><a class="btn outline" href="connexion.html">Se connecter</a><a class="btn outline" href="inscription.html">Créer un compte</a><a class="btn primary" href="publier.html">Déposer une annonce</a></div></div></header><main><div class="container page-intro"><p class="eyebrow">Vendre</p><h1>Publier une annonce</h1><p class="muted">Votre annonce sera en attente de validation par l’administrateur.</p></div><div class="container"><form id="publish-form" class="form-wrap"><div class="form-card"><h3>Informations</h3><div class="field"><label>Titre *</label><input id="title" required></div><div class="field"><label>Catégorie *</label><select id="category" required><option>Véhicules</option><option>Immobilier</option><option>Téléphones</option><option>Maison</option><option>Mode</option><option>Loisirs</option><option>Autre</option></select></div><div class="field"><label>Prix en DH *</label><input id="price" type="number" min="0" required></div><div class="field"><label>Ville *</label><select id="city" required><option>Casablanca</option><option>Rabat</option><option>Marrakech</option><option>Fès</option><option>Tanger</option></select></div><div class="field"><label>Image URL (facultatif)</label><input id="image" type="url"></div></div><div class="form-card"><h3>Description et contact</h3><div class="field"><label>Nom de l’annonceur *</label><input id="seller" required></div><div class="field"><label>E-mail *</label><input id="email" type="email" required></div><div class="field"><label>Description *</label><textarea id="description" required></textarea></div><button class="primary">Envoyer pour validation</button><p id="pub-msg"></p></div></form></div></main><footer class="footer"><div class="container footer-grid"><div><a class="logo" style="color:white" href="index.html">BONNE<span>AFFAIRE</span></a><p>Les bonnes occasions, près de vous.</p></div><div><h3>Explorer</h3><a href="recherche.html">Toutes les annonces</a><a href="favoris.html">Mes favoris</a></div><div><h3>Compte</h3><a href="connexion.html">Se connecter</a><a href="inscription.html">Créer un compte</a><a href="admin.html">Administration</a></div></div><div class="container small">© 2026 BONNE AFFAIRE · Projet pédagogique</div></footer><div id="toast" class="toast hidden"></div><script src="app.js"></script></body></html>
+<!doctype html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Publier | BONNE AFFAIRE</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header class="header">
+        <div class="container nav"><a class="logo" href="index.html">BONNE<span>AFFAIRE</span></a><button
+                class="mobile outline" onclick="document.querySelector('.links').classList.toggle('open')">☰</button>
+            <nav class="links"><a href="index.html">Accueil</a><a href="recherche.html">Annonces</a><a
+                    href="publier.html">Publier</a><a href="favoris.html">Favoris</a><a
+                    href="messagerie.html">Messagerie</a><a href="admin.html">Administration</a></nav>
+            <div class="nav-actions"><a class="btn outline" href="connexion.html">Se connecter</a><a class="btn outline"
+                    href="inscription.html">Créer un compte</a><a class="btn primary" href="publier.html">Déposer une
+                    annonce</a></div>
+        </div>
+    </header>
+    <main>
+        <div class="container page-intro">
+            <p class="eyebrow">Vendre</p>
+            <h1>Publier une annonce</h1>
+            <p class="muted">Votre annonce sera en attente de validation par l’administrateur.</p>
+        </div>
+        <div class="container">
+            <form id="publish-form" class="form-wrap">
+                <div class="form-card">
+                    <h3>Informations</h3>
+                    <div class="field"><label>Titre *</label><input id="title" required></div>
+                    <div class="field"><label>Catégorie *</label><select id="category" required>
+                            <option>Véhicules</option>
+                            <option>Immobilier</option>
+                            <option>Téléphones</option>
+                            <option>Maison</option>
+                            <option>Mode</option>
+                            <option>Loisirs</option>
+                            <option>Autre</option>
+                        </select></div>
+                    <div class="field"><label>Prix en DH *</label><input id="price" type="number" min="0" required>
+                    </div>
+                    <div class="field"><label>Ville *</label><select id="city" required>
+                            <option>Casablanca</option>
+                            <option>Rabat</option>
+                            <option>Marrakech</option>
+                            <option>Fès</option>
+                            <option>Tanger</option>
+                        </select></div>
+                    <div class="field"><label>Image URL (facultatif)</label><input id="image" type="url"></div>
+                </div>
+                <div class="form-card">
+                    <h3>Description et contact</h3>
+                    <div class="field"><label>Nom de l’annonceur *</label><input id="seller" required></div>
+                    <div class="field"><label>E-mail *</label><input id="email" type="email" required></div>
+                    <div class="field"><label>Description *</label><textarea id="description" required></textarea></div>
+                    <button class="primary">Envoyer pour validation</button>
+                    <p id="pub-msg"></p>
+                </div>
+            </form>
+        </div>
+    </main>
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div><a class="logo" style="color:white" href="index.html">BONNE<span>AFFAIRE</span></a>
+                <p>Les bonnes occasions, près de vous.</p>
+            </div>
+            <div>
+                <h3>Explorer</h3><a href="recherche.html">Toutes les annonces</a><a href="favoris.html">Mes favoris</a>
+            </div>
+            <div>
+                <h3>Compte</h3><a href="connexion.html">Se connecter</a><a href="inscription.html">Créer un compte</a><a
+                    href="admin.html">Administration</a>
+            </div>
+        </div>
+        <div class="container small">© 2026 BONNE AFFAIRE · Projet pédagogique</div>
+    </footer>
+    <div id="toast" class="toast hidden"></div>
+    <script src="app.js"></script>
+</body>
+
+</html>
