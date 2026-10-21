@@ -31,8 +31,16 @@
                 <aside class="panel">
                     <h3>Filtres</h3>
                     <form id="filter-form">
-                        <div class="field"><label>Mot-clé</label><input name="q" placeholder="Que recherchez-vous ?">
-                        </div>
+                    <div class="field">
+                        <label for="search-keyword">Rechercher un produit</label>
+                        <input
+                            id="search-keyword"
+                            name="q"
+                            type="search"
+                            placeholder="Ex. : Vélo, téléphone, ordinateur..."
+                            autocomplete="off"
+                        >
+                    </div>
                         <div class="field"><label>Catégorie</label><select name="categorie" id="categorie">
                                 <option value="">Toutes</option>
                                 <option>Véhicules</option>
