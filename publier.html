@@ -30,7 +30,16 @@
             <form id="publish-form" class="form-wrap">
                 <div class="form-card">
                     <h3>Informations</h3>
-                    <div class="field"><label>Titre *</label><input id="title" required></div>
+                    <div class="field">
+                        <label>État du produit *</label>
+                        <select id="condition" required>
+                            <option value="">Choisir l'état du produit</option>
+                            <option value="Neuf">Neuf</option>
+                            <option value="Comme neuf">Comme neuf</option>
+                            <option value="Bon état">Bon état</option>
+                            <option value="État acceptable">État acceptable</option>
+                        </select>
+                    </div>
                     <div class="field"><label>Catégorie *</label><select id="category" required>
                             <option>Véhicules</option>
                             <option>Immobilier</option>
