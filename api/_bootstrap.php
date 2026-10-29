@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
+ini_set('display_errors', '0');
+ini_set('log_errors', '1');
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 if (class_exists(Dotenv\Dotenv::class)) {

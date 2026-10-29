@@ -32,8 +32,15 @@ function getDatabase(): PDO
         throw new RuntimeException('Place the Aiven CA certificate at certs/ca.pem.');
     }
     if (is_file($caPath)) {
-        $options[PDO::MYSQL_ATTR_SSL_CA] = $caPath;
-        $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = true;
+        // PHP 8.5 deprecated the PDO::MYSQL_* aliases. Use the new names when available.
+        $sslCaAttribute = defined('Pdo\\Mysql::ATTR_SSL_CA')
+            ? constant('Pdo\\Mysql::ATTR_SSL_CA')
+            : PDO::MYSQL_ATTR_SSL_CA;
+        $sslVerifyAttribute = defined('Pdo\\Mysql::ATTR_SSL_VERIFY_SERVER_CERT')
+            ? constant('Pdo\\Mysql::ATTR_SSL_VERIFY_SERVER_CERT')
+            : PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT;
+        $options[$sslCaAttribute] = $caPath;
+        $options[$sslVerifyAttribute] = true;
     }
 
     return new PDO($dsn, $user, $password, $options);
