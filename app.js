@@ -7,14 +7,20 @@ const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => 
 const money = (value) => `${Number(value).toLocaleString('fr-FR')} DH`;
 
 async function api(path, options = {}) {
-    const headers = { ...(options.headers || {}) };
+    const headers = { Accept: 'application/json', ...(options.headers || {}) };
     if (options.body && typeof options.body !== 'string') {
         headers['Content-Type'] = 'application/json';
         options.body = JSON.stringify(options.body);
     }
     if (options.method && options.method !== 'GET') headers['X-CSRF-Token'] = csrfToken;
-    const response = await fetch(`api/${path}`, { credentials: 'same-origin', ...options, headers });
-    const result = await response.json();
+    const response = await fetch(`api/${path}`, { cache: 'no-store', credentials: 'same-origin', ...options, headers });
+    const responseText = await response.text();
+    let result;
+    try {
+        result = responseText ? JSON.parse(responseText) : {};
+    } catch {
+        throw new Error(`Réponse serveur invalide (${response.status}). Consultez les journaux Vercel.`);
+    }
     if (!response.ok || !result.success) throw new Error(result.message || 'Request failed.');
     return result;
 }
@@ -50,7 +56,6 @@ function renderAuthNav() {
     if (!actions) return;
     if (!currentUser) return;
     actions.innerHTML = `<span class="small">Bonjour ${escapeHtml(currentUser.name)}</span>
-        ${currentUser.role === 'admin' ? '<a class="btn outline" href="admin.html">Administration</a>' : ''}
         <button class="btn outline" type="button" id="logout-button">Se déconnecter</button>
         <a class="btn primary" href="publier.html">Déposer une annonce</a>`;
     document.getElementById('logout-button').addEventListener('click', async () => {

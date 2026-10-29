@@ -54,7 +54,6 @@ try {
         if (!$exists->fetchColumn()) jsonResponse(['success' => false, 'message' => 'That conversation does not exist.'], 403);
         $recipientId = $withId;
     } else {
-        if ((int) $user['id'] === $ownerId) jsonResponse(['success' => false, 'message' => 'You cannot message yourself.'], 422);
         $recipientId = $ownerId;
     }
     $stmt = database()->prepare('INSERT INTO messages (listing_id, sender_id, receiver_id, message) VALUES (?, ?, ?, ?)');
