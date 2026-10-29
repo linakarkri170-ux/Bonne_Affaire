@@ -1,20 +1,32 @@
-# BONNE AFFAIRE — HTML, CSS, JavaScript
+# BONNE AFFAIRE
 
-## Pages
-- `index.html` : accueil
-- `recherche.html` : consulter, rechercher et filtrer les annonces par mot-clé, catégorie, ville, prix et date
-- `detail.html` : détail d’une annonce et contact annonceur
-- `connexion.html` : connexion de démonstration avec choix du rôle
-- `inscription.html` : création de compte de démonstration
-- `publier.html` : dépôt d’annonce en attente de validation
-- `favoris.html` : favoris
-- `messagerie.html` : messagerie de démonstration
-- `admin.html` : valider/refuser/supprimer les annonces, gérer les catégories et villes, supprimer un membre
-- `style.css` : styles responsive
-- `app.js` : interactions du prototype
+BONNE AFFAIRE is a French-language classifieds site. Its pages now use PHP API functions and MySQL instead of browser-only `localStorage` for accounts, listings, favorites, messages, and administration.
 
-## Lancer
-Décompressez le ZIP, ouvrez le dossier dans VS Code puis lancez `index.html` avec Live Server ou ouvrez-le directement dans le navigateur.
+## Database setup
 
-## Important
-Il s’agit d’un prototype front-end. Les données sont enregistrées localement dans le navigateur (`localStorage`). L’authentification, les rôles, la messagerie et la gestion des membres ne sont pas sécurisés et ne remplacent pas un backend ni une vraie base de données.
+1. Open the Aiven SQL editor for `defaultdb`. On a fresh database, run `database.sql` once; it creates the website tables and initial categories and cities. If you already ran the earlier BONNE AFFAIRE schema shared in this chat, run `database-migration.sql` instead to add persistent sessions and seed any missing categories/cities. Do not rerun the full create script over existing tables.
+2. Download the CA certificate from the Aiven service page and save it as `certs/ca.pem` in this project. The certificate is public; keep database passwords private.
+3. Copy `.env.example` to `.env` for local work. Fill in `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, and `DB_PASSWORD` from Aiven. Add the same values as environment variables in Vercel.
+4. Install the PHP dependency with `composer install`. PHP must have PDO MySQL enabled.
+5. Deploy the repository to Vercel. `vercel.json` maps `api/*.php` to the PHP runtime. Use the deployed site's URL; opening HTML files directly with `file://` cannot run the API.
+
+## First administrator
+
+Create an account through `inscription.html`, then promote that account in Aiven's SQL editor by replacing the email below:
+
+```sql
+UPDATE users SET role = 'admin' WHERE email = 'your-email@example.com';
+```
+
+The login page does not allow users to choose their role. Administrator access is checked by the server.
+
+## Main pages
+
+- `index.html`, `recherche.html`, `detail.html`: browse approved listings
+- `inscription.html`, `connexion.html`: create an account and sign in
+- `publier.html`: submit a listing for admin approval
+- `favoris.html`: save and view favorite listings
+- `messagerie.html`: message a listing owner
+- `admin.html`: moderate listings and manage categories, cities, and members
+
+New listing photos are currently entered as image URLs. The database stores the URL in `listings.image_url`.

@@ -1,1 +1,272 @@
-const K={a:'ba_ads',f:'ba_favs',m:'ba_members',c:'ba_cats',v:'ba_cities'};const seed=[{id:1,title:'Smartphone en très bon état',category:'Téléphones',price:2400,city:'Casablanca',seller:'Youssef',email:'youssef@example.ma',description:'Téléphone bien entretenu, accessoires inclus.',status:'approved',date:'2026-10-17',icon:'📱'},{id:2,title:'Appartement lumineux à louer',category:'Immobilier',price:4200,city:'Rabat',seller:'Salma',email:'salma@example.ma',description:'Appartement proche des commerces et transports.',status:'approved',date:'2026-10-16',icon:'🏠'},{id:3,title:'Vélo urbain pour adulte',category:'Loisirs',price:950,city:'Fès',seller:'Amine',email:'amine@example.ma',description:'Vélo pratique, en très bon état.',status:'approved',date:'2026-10-15',icon:'🚲'},{id:4,title:'Canapé moderne trois places',category:'Maison',price:1800,city:'Marrakech',seller:'Nadia',email:'nadia@example.ma',description:'Canapé confortable, couleur neutre.',status:'pending',date:'2026-10-18',icon:'🛋️'}];function get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}}function put(k,v){localStorage.setItem(k,JSON.stringify(v))}function ads(){return get(K.a,seed)}function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function money(n){return Number(n).toLocaleString('fr-FR')+' DH'}function toast(s){let e=document.getElementById('toast');if(e){e.textContent=s;e.classList.remove('hidden');setTimeout(()=>e.classList.add('hidden'),2400)}}function card(x){return `<article class="card"><a href="detail.html?id=${x.id}"><div class="photo">${x.image?`<img src="${esc(x.image)}" alt="">`:x.icon||'📦'}<span class="tag">${esc(x.category)}</span></div></a><div class="card-body"><h3><a href="detail.html?id=${x.id}">${esc(x.title)}</a></h3><div class="price">${money(x.price)}</div><p class="meta">📍 ${esc(x.city)} · ${esc(x.date)}</p><div class="card-actions"><a class="btn outline" href="detail.html?id=${x.id}">Voir détails</a><button class="primary" onclick="fav(${x.id})">♡ Favori</button></div></div></article>`}function render(id,arr){let e=document.getElementById(id);if(e)e.innerHTML=arr.length?arr.map(card).join(''):'<p class="empty">Aucun résultat.</p>'}function fav(id){let f=get(K.f,[]);f=f.includes(id)?f.filter(x=>x!==id):(f.push(id),f);put(K.f,f);toast('Favoris mis à jour.');if(document.getElementById('fav-list'))showFav()}function showFav(){let a=ads().filter(x=>get(K.f,[]).includes(x.id));render('fav-list',a);document.getElementById('fav-empty')?.classList.toggle('hidden',a.length>0)}function filters(){let f=document.getElementById('filter-form');if(!f)return;let d=new FormData(f),q=(d.get('q')||'').toLowerCase(),cat=d.get('categorie'),city=d.get('ville'),min=Number(d.get('min')||0),max=Number(d.get('max')||Infinity),date=d.get('date');let a=ads().filter(x=>x.status==='approved'&&(!q||x.title.toLowerCase().includes(q)||x.description.toLowerCase().includes(q))&&(!cat||x.category===cat)&&(!city||x.city===city)&&x.price>=min&&x.price<=max&&(!date||x.date>=date));let s=document.getElementById('sort')?.value;if(s==='low')a.sort((x,y)=>x.price-y.price);if(s==='high')a.sort((x,y)=>y.price-x.price);document.getElementById('count').textContent=a.length+' annonce(s)';render('search-list',a)}function detail(){let e=document.getElementById('detail');if(!e)return;let id=Number(new URLSearchParams(location.search).get('id')||1),x=ads().find(a=>a.id===id);if(!x){e.innerHTML='Annonce introuvable.';return}e.innerHTML=`<div class="detail-grid"><div><div class="detail-photo">${x.image?`<img src="${esc(x.image)}">`:x.icon||'📦'}</div><div class="panel"><h2>Description</h2><p>${esc(x.description)}</p></div></div><aside class="panel"><p class="eyebrow">${esc(x.category)}</p><h2>${esc(x.title)}</h2><p class="price">${money(x.price)}</p><p>📍 ${esc(x.city)}</p><hr><h3>Annonceur</h3><p>${esc(x.seller)}</p><p>${esc(x.email)}</p><button class="primary" onclick="sessionStorage.setItem('ba_chat',${JSON.stringify(x.seller+' — '+x.title)});location.href='messagerie.html'">Envoyer un message</button> <button class="outline" onclick="fav(${x.id})">♡ Favori</button></aside></div>`}function admin(){if(!document.getElementById('admin-ads'))return;let a=ads();document.getElementById('total').textContent=a.length;document.getElementById('pending').textContent=a.filter(x=>x.status==='pending').length;document.getElementById('approved').textContent=a.filter(x=>x.status==='approved').length;document.getElementById('members-count').textContent=get(K.m,[]).length;document.getElementById('admin-ads').innerHTML=`<table><tr><th>Annonce</th><th>Prix</th><th>Ville</th><th>Statut</th><th>Actions</th></tr>${a.map(x=>`<tr><td>${esc(x.title)}</td><td>${money(x.price)}</td><td>${esc(x.city)}</td><td><span class="status ${x.status}">${x.status==='approved'?'Validée':x.status==='pending'?'En attente':'Refusée'}</span></td><td>${x.status!=='approved'?`<button class="primary" onclick="moderate(${x.id},'approved')">Valider</button>`:''} <button class="outline" onclick="moderate(${x.id},'rejected')">Refuser</button> <button class="outline" onclick="delAd(${x.id})">Supprimer</button></td></tr>`).join('')}</table>`;taxList('cat-list',get(K.c,['Véhicules','Immobilier','Téléphones','Maison','Mode','Loisirs','Autre']),'c');taxList('city-list',get(K.v,['Casablanca','Rabat','Marrakech','Fès','Tanger']),'v');let m=get(K.m,[]);document.getElementById('member-list').innerHTML=m.length?`<table><tr><th>Nom</th><th>E-mail</th><th></th></tr>${m.map((x,i)=>`<tr><td>${esc(x.name)}</td><td>${esc(x.email)}</td><td><button class="outline" onclick="delMember(${i})">Supprimer</button></td></tr>`).join('')}</table>`:'<p class="muted">Aucun membre inscrit.</p>'}function moderate(id,status){put(K.a,ads().map(x=>x.id===id?{...x,status}:x));admin();toast('Statut mis à jour.')}function delAd(id){if(confirm('Supprimer cette annonce ?')){put(K.a,ads().filter(x=>x.id!==id));admin()}}function delMember(i){let m=get(K.m,[]);m.splice(i,1);put(K.m,m);admin()}function taxList(id,a,k){document.getElementById(id).innerHTML=a.map((x,i)=>`<span style="display:inline-block;background:#f4f6f8;padding:7px;margin:4px;border-radius:7px">${esc(x)} <button onclick="delTax('${k}',${i})">×</button></span>`).join('')}function delTax(k,i){let key=k==='c'?K.c:K.v,d=k==='c'?['Véhicules','Immobilier','Téléphones','Maison','Mode','Loisirs','Autre']:['Casablanca','Rabat','Marrakech','Fès','Tanger'],a=get(key,d);a.splice(i,1);put(key,a);admin()}document.addEventListener('DOMContentLoaded',()=>{render('home-list',ads().filter(x=>x.status==='approved').slice(0,4));let ff=document.getElementById('filter-form');if(ff){let p=new URLSearchParams(location.search);['q','categorie','ville'].forEach(k=>{if(p.has(k)&&ff.elements[k])ff.elements[k].value=p.get(k)});ff.onsubmit=e=>{e.preventDefault();filters()};ff.onreset=()=>setTimeout(filters,0);document.getElementById('sort').onchange=filters;filters()}detail();showFav();admin();document.getElementById('publish-form')?.addEventListener('submit',e=>{e.preventDefault();let val=id=>document.getElementById(id).value.trim(),a=ads();a.unshift({id:Date.now(),title:val('title'),category:val('category'),price:Number(val('price')),city:val('city'),seller:val('seller'),email:val('email'),description:val('description'),image:val('image'),icon:'📦',status:'pending',date:new Date().toISOString().slice(0,10)});put(K.a,a);document.getElementById('pub-msg').innerHTML='<p class="notice success">Annonce envoyée. Elle sera visible après validation par l’administrateur.</p>';e.target.reset()});document.getElementById('register-form')?.addEventListener('submit',e=>{e.preventDefault();let m=get(K.m,[]),x={name:document.getElementById('name').value.trim(),email:document.getElementById('email').value.trim().toLowerCase(),password:document.getElementById('password')?.value||''};if(m.some(y=>String(y.email).toLowerCase()===x.email)){document.getElementById('reg-msg').textContent='Adresse e-mail déjà utilisée.';return}m.push(x);put(K.m,m);document.getElementById('reg-msg').innerHTML='Compte créé avec succès ! <a href="connexion.html">Connectez-vous</a>.';e.target.reset()});document.getElementById('login-form')?.addEventListener('submit',e=>{e.preventDefault();let email=document.getElementById('login-email')?.value.trim().toLowerCase(),password=document.getElementById('login-password')?.value||'',r=document.getElementById('role')?.value;let member=get(K.m,[]).find(x=>String(x.email).toLowerCase()===email&&x.password===password);if(r==='admin'){document.getElementById('login-msg').textContent='Connexion administrateur de démonstration.';location.href='admin.html';return}if(!member){document.getElementById('login-msg').textContent='E-mail ou mot de passe incorrect. Si vous n’avez pas de compte, créez-en un.';return}document.getElementById('login-msg').textContent='Bienvenue, '+member.name+' !';});document.getElementById('category-form')?.addEventListener('submit',e=>{e.preventDefault();let a=get(K.c,['Véhicules','Immobilier','Téléphones','Maison','Mode','Loisirs','Autre']);a.push(document.getElementById('new-category').value.trim());put(K.c,a);e.target.reset();admin()});document.getElementById('city-form')?.addEventListener('submit',e=>{e.preventDefault();let a=get(K.v,['Casablanca','Rabat','Marrakech','Fès','Tanger']);a.push(document.getElementById('new-city').value.trim());put(K.v,a);e.target.reset();admin()});let ct=sessionStorage.getItem('ba_chat');if(ct&&document.getElementById('chat-title'))document.getElementById('chat-title').textContent=ct;document.getElementById('message-form')?.addEventListener('submit',e=>{e.preventDefault();let b=document.createElement('div');b.className='bubble mine';b.textContent=document.getElementById('message').value;document.getElementById('chat-log').appendChild(b);document.getElementById('message').value=''})});
+let csrfToken = '';
+let currentUser = null;
+
+const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+}[char]));
+const money = (value) => `${Number(value).toLocaleString('fr-FR')} DH`;
+
+async function api(path, options = {}) {
+    const headers = { ...(options.headers || {}) };
+    if (options.body && typeof options.body !== 'string') {
+        headers['Content-Type'] = 'application/json';
+        options.body = JSON.stringify(options.body);
+    }
+    if (options.method && options.method !== 'GET') headers['X-CSRF-Token'] = csrfToken;
+    const response = await fetch(`api/${path}`, { credentials: 'same-origin', ...options, headers });
+    const result = await response.json();
+    if (!response.ok || !result.success) throw new Error(result.message || 'Request failed.');
+    return result;
+}
+
+function toast(message) {
+    const element = document.getElementById('toast');
+    if (!element) return;
+    element.textContent = message;
+    element.classList.remove('hidden');
+    setTimeout(() => element.classList.add('hidden'), 2600);
+}
+
+function listingCard(item, isFavorite = false) {
+    const image = item.image
+        ? `<img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}" loading="lazy">`
+        : '📦';
+    return `<article class="card">
+        <a href="detail.html?id=${Number(item.id)}"><div class="photo">${image}<span class="tag">${escapeHtml(item.category)}</span></div></a>
+        <div class="card-body"><h3><a href="detail.html?id=${Number(item.id)}">${escapeHtml(item.title)}</a></h3>
+        <div class="price">${money(item.price)}</div><p class="meta">📍 ${escapeHtml(item.city)} · ${escapeHtml(item.date || '')}</p>
+        <div class="card-actions"><a class="btn outline" href="detail.html?id=${Number(item.id)}">Voir détails</a>
+        <button class="primary" type="button" onclick="toggleFavorite(${Number(item.id)},${isFavorite})">${isFavorite ? 'Retirer' : '♡ Favori'}</button></div></div></article>`;
+}
+
+function renderListings(targetId, listings, emptyText = 'Aucune annonce trouvée.', isFavorite = false) {
+    const target = document.getElementById(targetId);
+    if (!target) return;
+    target.innerHTML = listings.length ? listings.map((item) => listingCard(item, isFavorite)).join('') : `<p class="empty">${escapeHtml(emptyText)}</p>`;
+}
+
+function renderAuthNav() {
+    const actions = document.querySelector('.nav-actions');
+    if (!actions) return;
+    if (!currentUser) return;
+    actions.innerHTML = `<span class="small">Bonjour ${escapeHtml(currentUser.name)}</span>
+        ${currentUser.role === 'admin' ? '<a class="btn outline" href="admin.html">Administration</a>' : ''}
+        <button class="btn outline" type="button" id="logout-button">Se déconnecter</button>
+        <a class="btn primary" href="publier.html">Déposer une annonce</a>`;
+    document.getElementById('logout-button').addEventListener('click', async () => {
+        try { await api('logout.php', { method: 'POST', body: {} }); location.href = 'index.html'; }
+        catch (error) { toast(error.message); }
+    });
+}
+
+async function loadTaxonomies() {
+    const result = await api('categories.php');
+    for (const [id, values, allLabel] of [
+        ['category', result.categories, 'Choisir une catégorie'],
+        ['city', result.cities, 'Choisir une ville'],
+        ['categorie', result.categories, 'Toutes'],
+        ['ville', result.cities, 'Toutes les villes'],
+    ]) {
+        const select = document.getElementById(id);
+        if (!select) continue;
+        const selected = select.value;
+        select.innerHTML = `<option value="">${allLabel}</option>` + values.map((item) =>
+            `<option value="${escapeHtml(item.name)}">${escapeHtml(item.name)}</option>`).join('');
+        select.value = selected;
+    }
+}
+
+async function loadHome() {
+    const target = document.getElementById('home-list');
+    if (!target) return;
+    try { renderListings('home-list', (await api('listings.php?limit=1')).listings); }
+    catch (error) { target.innerHTML = `<p class="empty">${escapeHtml(error.message)}</p>`; }
+}
+
+async function loadSearch() {
+    const form = document.getElementById('filter-form');
+    if (!form) return;
+    const data = new FormData(form);
+    const params = new URLSearchParams();
+    for (const key of ['q', 'categorie', 'ville', 'min', 'max', 'date']) {
+        const value = String(data.get(key) || '').trim();
+        if (value) params.set(key === 'categorie' ? 'category' : key === 'ville' ? 'city' : key, value);
+    }
+    params.set('sort', document.getElementById('sort')?.value || 'recent');
+    try {
+        const listings = (await api(`listings.php?${params}`)).listings;
+        document.getElementById('count').textContent = `${listings.length} annonce(s)`;
+        renderListings('search-list', listings);
+    } catch (error) { document.getElementById('search-list').innerHTML = `<p class="empty">${escapeHtml(error.message)}</p>`; }
+}
+
+async function loadDetail() {
+    const target = document.getElementById('detail');
+    if (!target) return;
+    const id = Number(new URLSearchParams(location.search).get('id'));
+    if (!id) { target.textContent = 'Annonce introuvable.'; return; }
+    try {
+        const result = await api(`listings.php?id=${id}`);
+        const item = result.listings[0];
+        if (!item) { target.textContent = 'Annonce introuvable.'; return; }
+        const photo = item.image ? `<img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}">` : '📦';
+        const contactAction = Number(item.seller_id) === Number(currentUser?.id)
+            ? '<p class="notice">C’est votre annonce.</p>'
+            : `<button class="primary" onclick="location.href='messagerie.html?listing_id=${Number(item.id)}'">Envoyer un message</button>`;
+        target.innerHTML = `<div class="detail-grid"><div><div class="detail-photo">${photo}</div>
+            <div class="panel"><h2>Description</h2><p>${escapeHtml(item.description)}</p></div></div>
+            <aside class="panel"><p class="eyebrow">${escapeHtml(item.category)}</p><h2>${escapeHtml(item.title)}</h2>
+            <p class="price">${money(item.price)}</p><p>📍 ${escapeHtml(item.city)}</p><hr><h3>Annonceur</h3>
+            <p>${escapeHtml(item.seller)}</p>${contactAction}
+            <button class="outline" onclick="toggleFavorite(${Number(item.id)})">♡ Favori</button></aside></div>`;
+    } catch (error) { target.textContent = error.message; }
+}
+
+async function toggleFavorite(id, remove = false) {
+    if (!currentUser) { location.href = 'connexion.html'; return; }
+    try {
+        await api('favorites.php', { method: 'POST', body: { listing_id: id, remove } });
+        toast(remove ? 'Favori retiré.' : 'Annonce ajoutée aux favoris.');
+        if (document.getElementById('fav-list')) loadFavorites();
+    } catch (error) { toast(error.message); }
+}
+
+async function loadFavorites() {
+    const target = document.getElementById('fav-list');
+    if (!target) return;
+    if (!currentUser) { target.innerHTML = '<p class="empty">Connectez-vous pour consulter vos favoris. <a href="connexion.html">Se connecter</a></p>'; return; }
+    try {
+        const listings = (await api('favorites.php')).listings;
+        renderListings('fav-list', listings, 'Pas encore de favoris.', true);
+        document.getElementById('fav-empty')?.classList.toggle('hidden', listings.length > 0);
+    } catch (error) { target.innerHTML = `<p class="empty">${escapeHtml(error.message)}</p>`; }
+}
+
+async function loadAdmin() {
+    if (!document.getElementById('admin-ads')) return;
+    try {
+        const result = await api('admin.php');
+        document.getElementById('total').textContent = result.counts.total || 0;
+        document.getElementById('pending').textContent = result.counts.pending || 0;
+        document.getElementById('approved').textContent = result.counts.approved || 0;
+        document.getElementById('members-count').textContent = result.members.length;
+        document.getElementById('admin-ads').innerHTML = `<table><tr><th>Annonce</th><th>Prix</th><th>Ville</th><th>Statut</th><th>Actions</th></tr>${result.listings.map((item) =>
+            `<tr><td>${escapeHtml(item.title)}</td><td>${money(item.price)}</td><td>${escapeHtml(item.city)}</td><td>${escapeHtml(item.status)}</td><td>
+            ${item.status !== 'approved' ? `<button class="primary" onclick="adminAction('moderate',${Number(item.id)},'approved')">Valider</button>` : ''}
+            ${item.status !== 'rejected' ? `<button class="outline" onclick="adminAction('moderate',${Number(item.id)},'rejected')">Refuser</button>` : ''}
+            <button class="outline" onclick="adminAction('delete-listing',${Number(item.id)})">Supprimer</button></td></tr>`).join('')}</table>`;
+        renderTaxList('cat-list', result.categories, 'delete-category');
+        renderTaxList('city-list', result.cities, 'delete-city');
+        document.getElementById('member-list').innerHTML = result.members.length
+            ? `<table><tr><th>Nom</th><th>E-mail</th><th>Action</th></tr>${result.members.map((member) => `<tr><td>${escapeHtml(member.name)}</td><td>${escapeHtml(member.email)}</td><td><button class="outline" onclick="adminAction('delete-member',${Number(member.id)})">Supprimer</button></td></tr>`).join('')}</table>`
+            : '<p class="muted">Aucun membre inscrit.</p>';
+    } catch (error) { document.getElementById('admin-ads').textContent = error.message; }
+}
+
+function renderTaxList(targetId, items, action) {
+    document.getElementById(targetId).innerHTML = items.map((item) =>
+        `<span style="display:inline-block;background:#f4f6f8;padding:7px;margin:4px;border-radius:7px">${escapeHtml(item.name)} <button onclick="adminAction('${action}',${Number(item.id)})">×</button></span>`).join('');
+}
+
+async function adminAction(action, id, status = '') {
+    if (action.startsWith('delete') && !confirm('Confirmer la suppression ?')) return;
+    try { await api('admin.php', { method: 'POST', body: { action, id, status } }); await loadAdmin(); }
+    catch (error) { toast(error.message); }
+}
+
+async function loadMessages() {
+    const log = document.getElementById('chat-log');
+    if (!log) return;
+    if (!currentUser) { log.innerHTML = '<p>Connectez-vous pour utiliser la messagerie. <a href="connexion.html">Se connecter</a></p>'; return; }
+    const params = new URLSearchParams(location.search);
+    const listingId = Number(params.get('listing_id'));
+    if (!listingId) {
+        try {
+            const conversations = (await api('messages.php')).conversations;
+            log.innerHTML = conversations.length ? conversations.map((item) => `<p><a class="btn outline" href="messagerie.html?listing_id=${Number(item.listing_id)}&with_id=${Number(item.with_id)}">${escapeHtml(item.partner)} — ${escapeHtml(item.title)}</a></p>`).join('') : '<p class="muted">Aucune conversation. Contactez un vendeur depuis une annonce pour commencer.</p>';
+        } catch (error) { log.textContent = error.message; }
+        return;
+    }
+    try {
+        const withId = Number(params.get('with_id'));
+        const result = await api(`messages.php?listing_id=${listingId}${withId ? `&with_id=${withId}` : ''}`);
+        document.getElementById('chat-title').textContent = `${result.partner} — ${result.title}`;
+        log.innerHTML = result.messages.map((message) => `<div class="bubble ${Number(message.sender_id) === Number(currentUser.id) ? 'mine' : ''}">${escapeHtml(message.message)}<small class="small">${escapeHtml(message.date)}</small></div>`).join('') || '<p class="muted">Démarrez la conversation.</p>';
+        document.getElementById('message-form').dataset.listingId = listingId;
+        document.getElementById('message-form').dataset.withId = result.with_id;
+    } catch (error) { log.textContent = error.message; }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const session = await api('session.php');
+        csrfToken = session.csrf;
+        currentUser = session.user;
+        renderAuthNav();
+    } catch (error) { console.error(error); }
+
+    try { await loadTaxonomies(); } catch (error) { console.error(error); }
+    loadHome();
+    loadDetail();
+    loadFavorites();
+    loadAdmin();
+    loadMessages();
+
+    const filterForm = document.getElementById('filter-form');
+    if (filterForm) {
+        const params = new URLSearchParams(location.search);
+        for (const key of ['q', 'categorie', 'ville']) if (params.has(key) && filterForm.elements[key]) filterForm.elements[key].value = params.get(key);
+        filterForm.addEventListener('submit', (event) => { event.preventDefault(); loadSearch(); });
+        filterForm.addEventListener('reset', () => setTimeout(loadSearch, 0));
+        document.getElementById('sort')?.addEventListener('change', loadSearch);
+        loadSearch();
+    }
+
+    document.getElementById('register-form')?.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const message = document.getElementById('reg-msg');
+        try {
+            const result = await api('register.php', { method: 'POST', body: { name: form.elements.name.value.trim(), email: form.elements.email.value.trim(), password: form.elements.password.value } });
+            currentUser = result.user; message.textContent = 'Account created. You are now signed in.'; location.href = 'index.html';
+        } catch (error) { message.textContent = error.message; }
+    });
+
+    document.getElementById('login-form')?.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const message = document.getElementById('login-msg');
+        try {
+            const result = await api('login.php', { method: 'POST', body: { email: document.getElementById('login-email').value.trim(), password: document.getElementById('login-password').value } });
+            currentUser = result.user; location.href = currentUser.role === 'admin' ? 'admin.html' : 'index.html';
+        } catch (error) { message.textContent = error.message; }
+    });
+
+    document.getElementById('publish-form')?.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const message = document.getElementById('pub-msg');
+        if (!currentUser) { message.textContent = 'Connectez-vous avant de publier une annonce.'; return; }
+        try {
+            const result = await api('listings.php', { method: 'POST', body: { title: form.elements.title.value.trim(), category: form.elements.category.value, city: form.elements.city.value, price: form.elements.price.value, image: form.elements.image.value.trim(), description: form.elements.description.value.trim() } });
+            message.textContent = result.message; form.reset();
+        } catch (error) { message.textContent = error.message; }
+    });
+
+    document.getElementById('category-form')?.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        try { await api('admin.php', { method: 'POST', body: { action: 'add-category', name: document.getElementById('new-category').value.trim() } }); event.currentTarget.reset(); await loadAdmin(); await loadTaxonomies(); }
+        catch (error) { toast(error.message); }
+    });
+    document.getElementById('city-form')?.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        try { await api('admin.php', { method: 'POST', body: { action: 'add-city', name: document.getElementById('new-city').value.trim() } }); event.currentTarget.reset(); await loadAdmin(); await loadTaxonomies(); }
+        catch (error) { toast(error.message); }
+    });
+    document.getElementById('message-form')?.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const input = document.getElementById('message');
+        try { await api('messages.php', { method: 'POST', body: { listing_id: Number(form.dataset.listingId), with_id: Number(form.dataset.withId), message: input.value.trim() } }); input.value = ''; await loadMessages(); }
+        catch (error) { toast(error.message); }
+    });
+});

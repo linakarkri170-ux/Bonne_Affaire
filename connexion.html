@@ -32,16 +32,13 @@
                 <div class="auth-main">
                     <h2>Se connecter</h2>
                     <form id="login-form">
-                        <div class="field"><label>E-mail</label><input id="login-email" type="email" required></div>
+                        <div class="field"><label>E-mail</label><input id="login-email" name="email" type="email" required></div>
                         <div class="field"><label>Mot de passe</label><input id="login-password" type="password"
                                 required minlength="4"></div>
-                        <div class="field"><label>Rôle de démonstration</label><select id="role">
-                                <option value="member">Membre</option>
-                                <option value="admin">Administrateur</option>
-                            </select></div><button class="primary">Se connecter</button>
+                        <button class="primary">Se connecter</button>
                         <p id="login-msg" class="muted"></p>
                     </form>
-                    <p class="small">Connexion de démonstration uniquement.</p>
+                    <p class="small">Votre rôle est attribué par le système. L’accès administrateur n’est pas sélectionnable ici.</p>
                 </div>
             </div>
         </div>

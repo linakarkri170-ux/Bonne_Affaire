@@ -30,17 +30,14 @@
                 <div class="message-layout">
                     <div>
                         <h3>Conversations</h3>
-                        <p class="muted">Contact annonceur</p><button class="outline"
-                            onclick="document.getElementById('chat-title').textContent='Annonceur'">Annonceur</button>
+                        <p class="muted">Les conversations apparaissent lorsque vous contactez le vendeur depuis une annonce.</p>
                     </div>
                     <div>
                         <h3 id="chat-title">Conversation</h3>
-                        <div class="chat-log" id="chat-log">
-                            <div class="bubble">Bonjour, l’annonce est-elle toujours disponible ?</div>
-                        </div>
-                        <form id="message-form" class="inline-form"><input id="message" required
+                        <div class="chat-log" id="chat-log"></div>
+                        <form id="message-form" class="inline-form"><input id="message" name="message" required
                                 placeholder="Votre message"><button class="primary">Envoyer</button></form>
-                        <p class="small">Messagerie de démonstration locale.</p>
+                        <p class="small">Connectez-vous pour envoyer et recevoir des messages.</p>
                     </div>
                 </div>
             </div>
